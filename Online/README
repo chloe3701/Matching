@@ -1,0 +1,7 @@
+Program implementing the water-filling algorithm.
+
+Run using py .\main.py
+You can change the name of the input file in main.py
+The display is only interesting for small scenario.
+
+To create a new random scenario use py .\data_generator.py
