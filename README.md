@@ -6,7 +6,7 @@ Contains the graph structure and the code to generate random scenarios
 
 Online:
 Contains the implementation of the water-filling algorithm and its comparison to the optimal solution
-TOFINISH
+TODO: Weighted?
 
 Learning_augmented:
 TODO:
