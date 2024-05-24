@@ -1,50 +1,58 @@
-# from ortools.linear_solver import pywraplp
-
-# def waterfilling(B,L,R,E,t,new,d={}):
-#     solver = pywraplp.Solver.CreateSolver("GLOP")
-#     if d=={}:
-#         for e in L:
-#             d[e]=0
-#             list_neighbors=B.neighbors(e)
-#             for n in list_neighbors:
-#                 d[e]=d[e]+B.edges[(e,n)]['weight']
-#     dnj=0
-#     for n in new:
-#         dnj+=d[n]
-#     l = solver.NumVar(0,solver.infinity(), "l")
-#     y = solver.NumVar(0,solver.infinity(), "y")
-
-#     solver.Add(y == 1+dnj)
-# cplex gurobi
-
+import sys
+sys.path.append('../')
+from Utils import graph
 
 def waterfilling(B, t, new_revealed,d):
     L=B.L
-    R=B.R
-    N=B.B.neighbors(t)
-    # current fractional degree
+    # d is the current fractional degree
+    # initialisation
     if d=={}:
         for e in L:
             d[e]=0
-            # list_neighbors=B.M.neighbors(e)
-            # for n in list_neighbors:
-            #     d[e]=d[e]+B.M.edges[(e,n)]['weight']
     
-    # add the corresponding edges with weight set to O 
     # and find l such that sum(i neighbors of t) of max{l,d(i)} = 1 + sum of d(i)
     i=0
     dnj=0
+    dn=[]
     for e in new_revealed:
+        e,w=e.split(':')
+        e=int(e)
+        w=int(w)
         dnj+=d[e]
-        i=i+1
         B.M.add_edge(t,e,weight=0)
+        dn.append(d[e])
+        i=i+1
+    dn.append(1)
 
-    l=(dnj/i)+1/i
+    dn.sort()
+    l=100
+    current_addition = 0
+    n=0
+    while n<i:
+        eq=0
+        #calculate the number of entries we fill at the same time at this level
+        while(n+eq+1<i and dn[n]==dn[n+eq+1]):
+            eq=eq+1
+
+        # (dn[n+eq+1]-dn[n])*(n+eq+1) + current_addition is the quantity we can increase before matching the height of the next water level
+        
+        # we are in the range of the actual l
+        if ((dn[n+eq+1]-dn[n])*(n+eq+1) + current_addition)>=1:
+            l = (1-current_addition)/(n+eq+1) + dn[n]
+            n=i
+        else:
+            current_addition = current_addition + (dn[n+eq+1]-dn[n])*(n+eq+1)
+            n=n+1+eq
+
     l=min(l,1)
+    #cur=0
     for i in new_revealed:
-        B.M[i][t]["weight"]=max(l,d[i])-d[i]
-        d[i]=d[i]+B.M[i][t]["weight"]
+        i,w=i.split(':')
+        i=int(i)
+        # if(d[i]<l):
+        #     cur = cur + l - d[i]
+        m = max(l,d[i])-d[i]
+        B.M[i][t]["weight"]= m
+        d[i]=d[i]+m
+    #print(cur)
     
-    
-
-#waterfilling(1,[3,3,3],1,1,1,1)
