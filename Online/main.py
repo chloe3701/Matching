@@ -15,7 +15,6 @@ def instance(n=0,filename=None,display=False):
     f = open(filename, "r")
     n = f.readline()
     B=graph.Bipartite_graph(int(n))
-    B.online_init()
     t=B.n
     d={}
     # approx is what needs to be maximized : the number of edge selected (TODO: add weight)

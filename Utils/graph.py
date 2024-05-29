@@ -7,35 +7,17 @@ class Bipartite_graph:
 
     # Let B=(V,E) an instance of a bipartite graph such that V=L∪R and |L|=n and |R|<=n
     # Let M=(V,E) a matching of B
+    # vertices in L are defined
     def __init__(self,n):
         self.B = nx.Graph()
         self.M = nx.Graph()
         self.n=n
         self.L=[]
         self.R=[]
-
-    # Initialization of the Bipartite graph in the Online setting
-    # At t=0, only the vertices in L are known.
-    def online_init(self):
-        for c in range(self.n):
+        for c in range(n):
             self.B.add_node(c,bipartite=0)
             self.M.add_node(c,bipartite=0)
             self.L.append(c)
-
-    # Initialization of the Bipartite graph in the Offline setting
-    # At initialization time, all vertices and edges are known, getting the informations from a file
-    def offline_init(self,filename):
-        f = open(filename, "r")
-        n = f.readline()
-        B = Bipartite_graph(int(n))
-        t = B.n
-        for x in f:
-            new=[]
-            for e in x.split():
-                new.append(e)
-            B.revealed(t,new)
-            t=t+1
-        f.close()
 
     # This function returns a list of all the edges of a Bipartite graph
     def get_edges(self):
@@ -44,19 +26,19 @@ class Bipartite_graph:
     def get_edges_matching(self):
         return list(self.M.edges(data='weight'))
     
+    def perfect(self):
+        for u in self.L:
+            if self.M.degree[u] != 1:
+                return False
+        return True
+    
     def control(self):
-        L = self.L
-        for l in L:
-            w=0
-            for r in self.M.neighbors(l):
-                w = w + self.M[l][r]["weight"]
+        for l in self.L:
+            w = sum(self.M[l][r]["weight"] for r in self.M.neighbors(l))
             if(w>1):
-                print("ERROR: constraint L not respected")
-        R = self.R
-        for r in R:
-            w=0
-            for l in self.M.neighbors(r):
-                w = w + self.M[l][r]["weight"]
+                print("ERROR: constraint L not respected") 
+        for r in self.R:
+            w = sum(self.M[l][r]["weight"] for l in self.M.neighbors(r))
             if(w>1):
                 print("ERROR: constraint R not respected")
 
@@ -114,3 +96,18 @@ class Bipartite_graph:
         plt.show()
 
 
+# Initialization of the Bipartite graph in the Offline setting
+# At initialization time, all vertices and edges are known, getting the informations from a file
+def offline_init(filename):
+    f = open(filename, "r")
+    n = f.readline()
+    B = Bipartite_graph(int(n))
+    t = B.n
+    for x in f:
+        new=[]
+        for e in x.split():
+            new.append(e)
+        B.revealed(t,new)
+        t=t+1
+    f.close()
+    return B
