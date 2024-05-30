@@ -45,7 +45,7 @@ scenario = (input("Do you want to :\n- run a comparison (1)\n- run a specific in
 if(scenario == '1'):
     approx=[]
     opt=[]
-    n_values = list(range(10, 200, 1))
+    n_values = list(range(4, 100, 1))
     for i in n_values:
         a,o=instance(n=i)
         approx.append(a)
@@ -58,8 +58,8 @@ if(scenario == '1'):
     plt.figure(figsize=(10, 6))
     plt.plot(n_values, approx, label ="Result using the waterfilling algorithm", color = "blue")
     plt.plot(n_values, opt, label ="Offline optimal result", color = "red")
-    e_approx = [(math.e / (math.e - 1)) * x for x in approx]
-    plt.plot(n_values,e_approx, label ="(e/e-1) * ALG", color = "green")
+    e_opt = [( (math.e - 1)/math.e) * x for x in opt]
+    plt.plot(n_values,e_opt, label ="(e-1/e) * OPT (lower bound)", color = "green")
 
     # Adding title and labels
     plt.title('Comparison between the approximated and the optimal solution')

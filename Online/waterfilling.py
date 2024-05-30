@@ -1,58 +1,55 @@
 import sys
 sys.path.append('../')
 from Utils import graph
+import math
 
-def waterfilling(B, t, new_revealed,d):
+def waterfilling(B, new_edge, new_revealed,fract_degree):
     L=B.L
-    # d is the current fractional degree
+    # fract_degree is the current fractional degree
     # initialisation
-    if d=={}:
+    if fract_degree=={}:
         for e in L:
-            d[e]=0
+            fract_degree[e]=0
     
-    # and find l such that sum(i neighbors of t) of max{l,d(i)} = 1 + sum of d(i)
-    i=0
-    dnj=0
-    dn=[]
+    # and find l such that sum(i neighbors of t) of max{l,fract_degree(i)} = 1 + sum of fract_degree(i)
+    num_neigh=0
+    fract_neigh=[]
     for e in new_revealed:
         e,w=e.split(':')
         e=int(e)
         w=int(w)
-        dnj+=d[e]
-        B.M.add_edge(t,e,weight=0)
-        dn.append(d[e])
-        i=i+1
-    dn.append(1)
+        B.M.add_edge(new_edge,e,weight=0)
+        fract_neigh.append(fract_degree[e])
+        num_neigh=num_neigh+1
+    fract_neigh.append(1)
 
-    dn.sort()
-    l=100
+    fract_neigh.sort()
+    l=math.inf
     current_addition = 0
     n=0
-    while n<i:
-        eq=0
+    while n<num_neigh:
+        # same_degree is the number of edges having the same degree in this iteration of the while
+        same_degree=0
         #calculate the number of entries we fill at the same time at this level
-        while(n+eq+1<i and dn[n]==dn[n+eq+1]):
-            eq=eq+1
+        while(n+same_degree+1<num_neigh and fract_neigh[n]==fract_neigh[n+same_degree+1]):
+            same_degree=same_degree+1
 
-        # (dn[n+eq+1]-dn[n])*(n+eq+1) + current_addition is the quantity we can increase before matching the height of the next water level
+        # (fract_neigh[n+same_degree+1]-fract_neigh[n])*(n+same_degree+1) + current_addition is the quantity we can increase before matching the height of the next water level
         
         # we are in the range of the actual l
-        if ((dn[n+eq+1]-dn[n])*(n+eq+1) + current_addition)>=1:
-            l = (1-current_addition)/(n+eq+1) + dn[n]
-            n=i
+        if ((fract_neigh[n+same_degree+1]-fract_neigh[n])*(n+same_degree+1) + current_addition)>=1:
+            l = (1-current_addition)/(n+same_degree+1) + fract_neigh[n]
+            n=num_neigh
         else:
-            current_addition = current_addition + (dn[n+eq+1]-dn[n])*(n+eq+1)
-            n=n+1+eq
+            current_addition = current_addition + (fract_neigh[n+same_degree+1]-fract_neigh[n])*(n+same_degree+1)
+            n=n+1+same_degree
 
     l=min(l,1)
-    #cur=0
-    for i in new_revealed:
-        i,w=i.split(':')
-        i=int(i)
-        # if(d[i]<l):
-        #     cur = cur + l - d[i]
-        m = max(l,d[i])-d[i]
-        B.M[i][t]["weight"]= m
-        d[i]=d[i]+m
-    #print(cur)
+    for edge in new_revealed:
+        edge,w=edge.split(':')
+        edge=int(edge)
+        # rise is the number by which we increase the degree for each neighbor of the new edge
+        rise = max(l,fract_degree[edge])-fract_degree[edge]
+        B.M[edge][new_edge]["weight"]= rise
+        fract_degree[edge]=fract_degree[edge]+rise
     
