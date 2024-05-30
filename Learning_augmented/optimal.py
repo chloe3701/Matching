@@ -31,10 +31,10 @@ def optimal(B):
     # Solve the problem
     status = solver.Solve()
     if status == pywraplp.Solver.OPTIMAL:
-        # print('Optimal matching found:')
-        # for (u, v, w) in edges:
-        #     if x[(u, v)].solution_value() > 0:
-        #         print(f'{u} - {v} : {x[(u, v)].solution_value()}')
+        print('Optimal matching found using the solver:')
+        for (u, v, w) in edges:
+            if x[(u, v)].solution_value() > 0:
+                print(f'{u} - {v} : {x[(u, v)].solution_value()}')
         return solver.Objective().Value()
     else:
         print('The problem does not have an optimal solution.')

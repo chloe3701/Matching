@@ -6,19 +6,21 @@ from Online import optimal as o
 import optimal
 import primaldual
 
-t=0
-for i in range(200):
-    data_generator.gen(30,"../Utils/tests/test2.txt",100)
-    filename = "../Utils/tests/instance.txt"
-    B = graph.offline_init("../Utils/tests/test2.txt")
-    # B.display()
-    possible=o.optimal(B)
-    opt=optimal.optimal(B)
-    # print(opt)
-    if((possible)==B.n):
-        verif = primaldual.hungarian(B)
-        if(verif==opt):
-            print("Solution optimale")
-            t=t+1
-print(t)
+# t=0
+# for i in range(200):
+filename = "../Utils/tests/instance.txt"
+data_generator.gen(10,filename,100)
+B = graph.offline_init(filename)
+# B.display()
+possible=o.optimal(B)
+opt=optimal.optimal(B)
+#print(opt)
+if((possible)==B.n):
+    verif = primaldual.hungarian(B)
+    if(verif==opt):
+        print("The solution is correct")
+        # t=t+1
+    else:
+        print("Unexpected error, the optimal solution of the two algorithms is different")
+# print(t)
 

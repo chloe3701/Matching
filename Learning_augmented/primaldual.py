@@ -149,18 +149,24 @@ def verify(B,p,q):
             B.display_matching()
         sum_dual += q[v]
     if(sum_dual == sum_primal):
-        print("CORRECT")
+        print("The solution of the Primal-Dual Hungarian algorithm is optimal (by strong duality)")
     else:
-        print("INCORRECT")
+        print("The solution of the Primal-Dual Hungarian algorithm is not optimal:")
         print("sum_dual=",sum_dual," but sum_primal=",sum_primal)
         B.display_matching()
 
-# Classic hungarian algorithm
-def hungarian(B):
-    # Initialisation: M = ∅ p=q=0
+
+# Initialisation: M = ∅ p=q=0
+def init_dual(B):
     p = {u: 0 for u in B.L}
     q = {v: 0 for v in B.R}
+    return p,q
 
+# Classic hungarian algorithm
+def hungarian(B):
+    
+    p,q = init_dual(B)
+    
     # While the matching built is not perfect:
     while(not B.perfect()):
         path = None
@@ -178,6 +184,7 @@ def hungarian(B):
         
 
     verify(B,p,q)
+    B.display_matching()
     
     # return the value of the matching
     w = 0
