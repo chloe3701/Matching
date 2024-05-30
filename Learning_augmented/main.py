@@ -4,19 +4,21 @@ from Utils import graph
 from Utils import data_generator
 from Online import optimal as o
 import optimal
-import primaldual
+import hungarian_classic as classic
+import hungarian_learned as learned
 
 # t=0
 # for i in range(200):
 filename = "../Utils/tests/instance.txt"
-data_generator.gen(10,filename,100)
+#data_generator.gen(10,filename,100)
 B = graph.offline_init(filename)
 # B.display()
 possible=o.optimal(B)
 opt=optimal.optimal(B)
+model =3
 #print(opt)
 if((possible)==B.n):
-    verif = primaldual.hungarian(B)
+    verif = learned.hungarian_learned(B,model)
     if(verif==opt):
         print("The solution is correct")
         # t=t+1
