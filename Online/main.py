@@ -45,25 +45,26 @@ scenario = (input("Do you want to :\n- run a comparison (1)\n- run a specific in
 if(scenario == '1'):
     approx=[]
     opt=[]
-    n_values = list(range(4, 100, 1))
+    n_values = list(range(4, 101, 1))
     for i in n_values:
         a,o=instance(n=i)
         approx.append(a)
         opt.append(o)
+    n_values = list(range(8,202,2))
 
     # print("n ",n_values)
     # print("appr ",approx)
     # print("opt ",opt)
     # Plotting the data
     plt.figure(figsize=(10, 6))
-    plt.plot(n_values, approx, label ="Result using the waterfilling algorithm", color = "blue")
-    plt.plot(n_values, opt, label ="Offline optimal result", color = "red")
+    plt.plot(n_values, approx, label ="Result of the waterfilling algorithm", color = "blue")
+    plt.plot(n_values, opt, label ="Optimal result", color = "red")
     e_opt = [( (math.e - 1)/math.e) * x for x in opt]
-    plt.plot(n_values,e_opt, label ="(e-1/e) * OPT (lower bound)", color = "green")
+    plt.plot(n_values,e_opt, label ="(e-1/e) * optimal (lower bound)", color = "green")
 
     # Adding title and labels
-    plt.title('Comparison between the approximated and the optimal solution')
-    plt.xlabel('Size of the graph')
+    #plt.title('Comparison between the approximated and the optimal solution of\n the maximal online unweighted bipartite matching')
+    plt.xlabel('Number of edges in the graph')
     plt.ylabel('Value of the objective function')
     plt.legend()
 

@@ -164,8 +164,10 @@ def init_dual(B):
 
 # Hungarian algorithm after initialisation of the dual variables
 def hungarian(B,p,q):
+    i=0
     # While the matching built is not perfect:
     while(not B.perfect()):
+        i+=1
         path = None
         start = [u for u in B.L if B.M.degree(u)== 0]
         for s in start:
@@ -182,16 +184,16 @@ def hungarian(B,p,q):
     for e in B.M.edges():
         w = w + B.B[e[0]][e[1]]["weight"]
     
-    return w
+    return w,i
 
 # Classic hungarian algorithm
-def hungarian_classic(B):
-    
+def hungarian_classic(B,display=False):
     p,q = init_dual(B)
-    w = hungarian(B,p,q)
-    verify(B,p,q)
-    B.display_matching()
-    return w
+    w, iterations = hungarian(B,p,q)
+    if(display):
+        verify(B,p,q)
+        B.display_matching()
+    return w, p, q, iterations
     
     
         
