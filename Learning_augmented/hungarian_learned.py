@@ -1,3 +1,4 @@
+import hungarian_classic_opt
 import hungarian_classic
 from random import choice
 import networkx as nx
@@ -6,7 +7,7 @@ import learning
 # find min sum(i in V) d[i]
 # s.t d[i]+d[j] >= r[i][j] for (i,j) in E
 def approx_dist_feasible(B,r):
-    d={v : 0 for v in B.B.nodes()}
+    d={v : float(0) for v in B.B.nodes()}
     G = B.B.copy()
     L=B.L.copy()
     while (G.edges()):
@@ -28,12 +29,11 @@ def make_feasible(B,p,q):
     # r[u][v] is the "overflow" of the edge (u,v)
     # meaning by how much p[u]+q[v] break the weight of the edge (u,v)
     r = {u:{} for u in B.L}
-    #print(B.B.edges())
     for e in B.B.edges():
         u=min(e[0],e[1])
         v=max(e[0],e[1])
-        p[u]=int(p[u])
-        q[v]=int(q[v])
+        p[u]=float(int(p[u]))
+        q[v]=float(int(q[v]))
         r[u][v] = max(0, p[u]+q[v] - B.B[u][v]["weight"])
     d = approx_dist_feasible(B,r)
     while(d):
@@ -67,9 +67,9 @@ def init_dual(B,model_p,model_q):
 
 def hungarian_learned(B,model_p,model_q,display=False):
     p,q = init_dual(B,model_p,model_q)
-    w,i = hungarian_classic.hungarian(B,p,q)
+    w,i = hungarian_classic_opt.hungarian(B,p,q,display=display)
     if(display):
-        hungarian_classic.verify(B,p,q)
+        hungarian_classic_opt.verify(B,p,q)
         B.display_matching()
     return w,i
     

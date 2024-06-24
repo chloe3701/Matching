@@ -65,7 +65,7 @@ def adjust(B, p, q):
                     else:
                         min_v=min_v+[v]
                     min_t=value
-                    
+                  
                     augmentable=True
         if(augmentable):
             for v in min_v:
@@ -87,7 +87,10 @@ def adjust(B, p, q):
             for v in B.B.neighbors(u):
                 if v not in S:
                     delta = min(delta, B.B[u][v]["weight"] - p[u] - q[v])
-                    
+        
+        # print(p,q)
+        # print(delta)
+        # B.display_matching()            
         if(delta > 0):
             # Dual adjustement step
             # -> adjust all p[u] to p[u] + delta and all q[v] to q[v] - delta
@@ -167,6 +170,8 @@ def hungarian(B,p,q):
     i=0
     # While the matching built is not perfect:
     while(not B.perfect()):
+        # B.display_matching()
+        # print(p,q)
         i+=1
         path = None
         start = [u for u in B.L if B.M.degree(u)== 0]

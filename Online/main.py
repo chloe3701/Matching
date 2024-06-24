@@ -26,6 +26,7 @@ def instance(n=0,filename=None,display=False):
             new_revealed.append(e)
         B.revealed(t,new_revealed)
         w.waterfilling(B, t, new_revealed,d)
+        B.display_matching()
         t=t+1
     f.close()
     for (u,v,weight) in B.get_edges_matching():
@@ -80,7 +81,7 @@ elif(scenario=='2'):
     else:
         display=False
 
-    filename = "../Utils/tests/test.txt"
+    filename = "../Utils/tests/test_debug.txt"
     max_edge,opt=instance(filename=filename,display=display)
     print("The optimal solution is: ", opt)
     print("The number of edges selected is: ",max_edge)

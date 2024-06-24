@@ -2,7 +2,7 @@ import sys
 sys.path.append('../')
 from Utils import graph
 from Utils import data_generator
-import hungarian_classic as classic
+import hungarian_classic_opt as classic
 import numpy as np
 import pandas as pd
 import optimal
@@ -30,15 +30,14 @@ def extract_features(B):
         })
     return pd.DataFrame(features)
 
-def learn(graph_size,mean=100,std_dev=20):
-    p_mean={u:0 for u in range(graph_size)}
-    q_mean={v:0 for v in range(graph_size,2*graph_size)}
+def learn(graph_size,param1=100,param2=20,distribution=1):
+    p_mean={u:0.0 for u in range(graph_size)}
+    q_mean={v:0.0 for v in range(graph_size,2*graph_size)}
     
     solved_instances = []
     for i in range(training_size):
-        data_generator.gen(graph_size,filename,std_dev=std_dev,mean=mean)
-        
-        B=graph.offline_init(filename)
+        # B = data_generator.gen_no_file(graph_size,std_dev=std_dev,mean=mean)
+        B = data_generator.gen_no_file(graph_size,param1=param1,param2=param2,distribution=distribution)
         opt=optimal.optimal(B)
         if(opt!=-1):
             _,p,q,_ = classic.hungarian_classic(B)

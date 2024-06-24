@@ -1,4 +1,4 @@
-import hungarian_classic
+import hungarian_classic_opt
 import hungarian_learned as hl
 
 
@@ -11,7 +11,7 @@ def init_dual(B,p_mean,q_mean):
 
 def hungarian_mean(B,p_mean,q_mean):
     p,q = init_dual(B,p_mean,q_mean)
-    w,i = hungarian_classic.hungarian(B,p,q)
+    w,i = hungarian_classic_opt.hungarian(B,p,q)
     #hungarian_classic.verify(B,p,q)
     # B.display_matching()
     return w,i
